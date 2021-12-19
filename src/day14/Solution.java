@@ -10,7 +10,7 @@ public class Solution {
     public static void main(String[] args) {
         ExtendedPolymerization eP = new ExtendedPolymerization();
         System.out.println("Part 1: " + eP.part1());
-        System.out.println("Part 1: " + eP.part2());
+        System.out.println("Part 2: " + eP.part2());
     }
 }
 
@@ -32,16 +32,13 @@ class ExtendedPolymerization {
 
         for (int step = 0; step < 10; step++) {
             var added = 0;
-            for (int index = 0; index < oldTemplate.size() - 1; index ++) {
+            for (int index = 0; index < oldTemplate.size() - 1; index++) {
                 if (rules.containsKey(oldTemplate.subList(index, index + 2))) {
                     newTemplate.add(index + 1 + added, this.rules.get(oldTemplate.subList(index, index + 2)));
                     added++;
-//                    System.out.println(newTemplate);
                 }
             }
-//            System.out.println(step + " After step " + newTemplate);
             oldTemplate = new ArrayList<>(newTemplate);
-//            System.out.println(oldTemplate);
         }
         int max = 0;
         int min = newTemplate.size();
@@ -49,8 +46,7 @@ class ExtendedPolymerization {
             int occurrences = Collections.frequency(oldTemplate, sign);
             if (occurrences > max) {
                 max = occurrences;
-            }
-            else if (occurrences < min) {
+            } else if (occurrences < min) {
                 min = occurrences;
             }
         }
@@ -62,10 +58,9 @@ class ExtendedPolymerization {
         for (Map.Entry<List<String>, String> rule : this.rules.entrySet()) {
             rulesMap.put(String.join("", rule.getKey()), rule.getValue());
         }
-        System.out.println(rulesMap);
 
         Map<String, Long> occurrences = new HashMap<>();
-        for (int index = 0; index < this.template.size() - 1; index ++) {
+        for (int index = 0; index < this.template.size() - 1; index++) {
             String pair = String.join("", this.template.subList(index, index + 2));
             if (!occurrences.containsKey(pair)) {
                 occurrences.put(pair, 1L);
@@ -73,27 +68,28 @@ class ExtendedPolymerization {
                 occurrences.put(pair, occurrences.get(pair) + 1);
             }
         }
-        System.out.println(occurrences);
 
-        for (int step = 0; step < 40; step ++) {
+        for (int step = 0; step < 40; step++) {
             Map<String, Long> newOccurrences = new HashMap<>();
             for (Map.Entry<String, Long> pairMapping : occurrences.entrySet()) {
                 if (rulesMap.containsKey(pairMapping.getKey())) {
                     Map<String, Long> data = new HashMap<>();
-                    data.put(pairMapping.getKey().charAt(0) + rulesMap.get(pairMapping.getKey()), pairMapping.getValue());
-                    data.put(rulesMap.get(pairMapping.getKey()) + pairMapping.getKey().charAt(1), pairMapping.getValue());
+                    data.put(pairMapping.getKey().charAt(0) + rulesMap.get(pairMapping.getKey()),
+                            pairMapping.getValue());
+                    data.put(rulesMap.get(pairMapping.getKey()) + pairMapping.getKey().charAt(1),
+                            pairMapping.getValue());
                     for (Map.Entry<String, Long> dataRow : data.entrySet()) {
-                        newOccurrences.put(dataRow.getKey(), newOccurrences.getOrDefault(dataRow.getKey(), 0L) + dataRow.getValue());
+                        newOccurrences.put(dataRow.getKey(),
+                                newOccurrences.getOrDefault(dataRow.getKey(), 0L) + dataRow.getValue());
                     }
-                }
-                else {
-                    newOccurrences.put(pairMapping.getKey(), newOccurrences.getOrDefault(pairMapping.getKey(), 0L) + pairMapping.getValue());
+                } else {
+                    newOccurrences.put(pairMapping.getKey(),
+                            newOccurrences.getOrDefault(pairMapping.getKey(), 0L) + pairMapping.getValue());
                 }
             }
             occurrences = new HashMap<>(newOccurrences);
         }
 
-        System.out.println();
         Map<String, Long> count = new HashMap<>();
         for (Map.Entry<String, Long> pairOcc : occurrences.entrySet()) {
             for (String letter : pairOcc.getKey().split("")) {
